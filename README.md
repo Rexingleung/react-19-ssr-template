@@ -17,6 +17,33 @@
    - 通过`hydrateRoot`方法激活页面上的React组件
    - 将静态HTML转换为可交互的React应用
 
+### SSR流程图
+
+```mermaid
+flowchart TD
+    subgraph "服务端渲染阶段"
+        A[客户端发起请求] --> B[服务器接收请求]
+        B --> C["entry-server.jsx 处理请求"]
+        C --> D["创建 React 应用实例<br/>(使用 StaticRouter)"]
+        D --> E["renderToPipeableStream<br/>渲染 React 组件"]
+        E --> F["生成 HTML 流"]
+        F --> G["发送 HTML 到客户端<br/>(包含初始状态和客户端 JS 链接)"]
+    end
+    
+    subgraph "客户端激活阶段"
+        G --> H["浏览器接收并显示 HTML"]
+        H --> I["加载客户端 JS 资源<br/>(entry-client.jsx)"]
+        I --> J["hydrateRoot 激活 DOM"]
+        J --> K["使用 BrowserRouter<br/>接管路由控制"]
+        K --> L["React 应用可交互"]
+    end
+    
+    style A fill:#f9d5e5,stroke:#333
+    style G fill:#eeeeee,stroke:#333
+    style H fill:#eeeeee,stroke:#333
+    style L fill:#d5f9e6,stroke:#333
+```
+
 ### 项目关键文件说明
 
 - **entry-server.jsx**: 
